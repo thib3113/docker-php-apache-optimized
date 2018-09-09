@@ -8,6 +8,13 @@ RUN apt update && apt install wget ssl-cert sendmail -y
 RUN a2enmod rewrite \
   && a2enmod headers 
 
+
+# NodeJS Build Stack dependencies
+RUN apt-get install -y -t jessie-backports ca-certificates-java openjdk-8-jre-headless libbatik-java \
+  && apt-get install -y nodejs fontforge \
+  && npm i -g ttf2eot \
+  && rm -rf /var/lib/apt/lists/*
+
 # install the PHP extensions we need
 RUN echo 'deb http://deb.debian.org/debian jessie-backports main' > /etc/apt/sources.list.d/backports.list \
   && apt-get update \
