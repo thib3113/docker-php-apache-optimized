@@ -1,4 +1,4 @@
-FROM php:5.6-apache
+FROM php:7.1-apache-jessie
 
 ENV DEBIAN_FRONTEND noninteractive
 
@@ -8,8 +8,6 @@ RUN apt update && apt upgrade -y && apt install wget ssl-cert sendmail gnupg lib
 RUN a2enmod rewrite \
   && a2enmod headers 
 
-RUN add-apt-repository ppa:ondrej/php
-
 # install the PHP extensions we need
 RUN echo 'deb http://deb.debian.org/debian jessie-backports main' > /etc/apt/sources.list.d/backports.list \
   && apt-get update \
@@ -18,16 +16,19 @@ RUN echo 'deb http://deb.debian.org/debian jessie-backports main' > /etc/apt/sou
   && docker-php-ext-configure gd --with-png-dir=/usr --with-jpeg-dir=/usr \
   && docker-php-ext-install gd json mysqli pdo pdo_mysql opcache gettext exif calendar soap sockets wddx mcrypt zip mbstring dom
 
-
-RUN apt install -y php5.6-curl php5.6-graphicsmagick
 # install APCu from PECL
-# RUN pecl -vvv install apcu && docker-php-ext-enable apcu
+RUN pecl -vvv install apcu && docker-php-ext-enable apcu
 
 # install curl
-# RUN docker-php-ext-install curl
+RUN docker-php-ext-install curl
 
 # install GMagick from PECL
-# RUN pecl -vvv install gmagick-beta && docker-php-ext-enable gmagick
+RUN pecl -vvv install gmagick-beta && docker-php-ext-enable gmagick
+
+#install imap extension
+RUN apt-get update && apt-get install -y libc-client-dev libkrb5-dev && rm -r /var/lib/apt/lists/*
+RUN docker-php-ext-configure imap --with-kerberos --with-imap-ssl \
+    && docker-php-ext-install imap
 
 # NodeJS Build Stack dependencies
 # RUN apt-get install -y -t jessie-backports ca-certificates-java openjdk-8-jre-headless libbatik-java \
@@ -78,7 +79,7 @@ RUN { \
   } >> /etc/apache2/apache2.conf
 
 # Cleanup
-RUN apt-get purge -y --auto-remove libpng12-dev libjpeg-dev libxml2-dev libxslt-dev libgraphicsmagick1-dev libldap2-dev libmcrypt-dev openjdk-7-jre openjdk-7-jre-headless
+RUN apt-get purge -y --auto-remove libpng12-dev libjpeg-dev libxml2-dev libxslt-dev libgraphicsmagick1-dev libldap2-dev libmcrypt-dev
 
 VOLUME /var/www/html
 
