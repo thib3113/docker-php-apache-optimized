@@ -9,8 +9,8 @@ RUN a2enmod rewrite \
   && a2enmod headers 
 
 # install the PHP extensions we need
-RUN echo 'deb http://deb.debian.org/debian jessie-backports main' > /etc/apt/sources.list.d/backports.list \
-  && apt-get update \
+#RUN echo 'deb http://deb.debian.org/debian jessie-backports main' > /etc/apt/sources.list.d/backports.list \
+RUN apt-get update \
   && curl -sL https://deb.nodesource.com/setup_8.x | bash \
   && apt-get install -y git zip zlib1g-dev libpng-dev libjpeg-dev libxml2-dev libxslt-dev libgraphicsmagick1-dev graphicsmagick libldap2-dev mcrypt libmcrypt-dev libltdl7 mariadb-client \
   && docker-php-ext-configure gd --with-png-dir=/usr --with-jpeg-dir=/usr \
