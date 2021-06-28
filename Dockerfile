@@ -13,7 +13,7 @@ RUN a2enmod rewrite \
 RUN apt-get update \
   && curl -sL https://deb.nodesource.com/setup_8.x | bash \
   && apt-get install -y git zip libzip-dev zlib1g-dev libpng-dev libjpeg-dev libxml2-dev libxslt-dev libgraphicsmagick1-dev graphicsmagick libldap2-dev libltdl7 mariadb-client \
-  && docker-php-ext-configure gd --with-png-dir=/usr --with-jpeg-dir=/usr \
+  && docker-php-ext-configure gd --with-png=/usr --with-jpeg=/usr \
   && docker-php-ext-install gd json mysqli pdo pdo_mysql opcache gettext exif calendar soap sockets wddx zip mbstring dom
 
 # install APCu from PECL
